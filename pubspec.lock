@@ -50,6 +50,20 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.0.0"
+  dart_nn:
+    dependency: "direct main"
+    description:
+      name: dart_nn
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.0.0+2"
+  dart_numerics:
+    dependency: transitive
+    description:
+      name: dart_numerics
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.0.5"
   fake_async:
     dependency: transitive
     description:
@@ -71,6 +85,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "5.2.1"
+  floating_action_bubble:
+    dependency: "direct main"
+    description:
+      name: floating_action_bubble
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.9"
   flutter:
     dependency: "direct main"
     description: flutter
@@ -165,6 +186,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "3.0.13"
+  quiver:
+    dependency: transitive
+    description:
+      name: quiver
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.1.5"
   sky_engine:
     dependency: transitive
     description: flutter
@@ -212,6 +240,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.2.19-nullsafety.2"
+  tuple:
+    dependency: "direct main"
+    description:
+      name: tuple
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.3"
   typed_data:
     dependency: transitive
     description:
@@ -232,7 +267,7 @@ packages:
       name: win32
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.7.3"
+    version: "1.7.4"
   xdg_directories:
     dependency: transitive
     description:
