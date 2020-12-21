@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-
-import 'file:///C:/Users/adamg/StudioProjects/q_net/lib/list/data_sets.dart';
+import 'package:q_net/list/common.dart';
+import 'package:q_net/list/data_sets.dart';
+import 'package:q_net/list/neural_networks.dart';
 
 ThemeData getTheme() {
   return ThemeData(
@@ -25,20 +26,20 @@ Drawer getDrawer(BuildContext context) {
   return Drawer(
     child: ListView(
       children: [
-        ListTile(
-          title: Text("Data sets"),
-          onTap: () {
-            Navigator.push(context, MaterialPageRoute(builder: (c) => DS()));
-          },
-        ),
-        ListTile(
-          title: Text("Home page"),
-          onTap: () {
-            Navigator.push(context, MaterialPageRoute(builder: (c) => MyApp()));
-          },
-        )
+        drawerElement(context, () => DataSets(), "Data sets"),
+        drawerElement(context, () => NeuralNetworks(), "Neural networks"),
       ],
     ),
+  );
+}
+
+ListTile drawerElement(BuildContext context, Widget builder(), String name) {
+  return ListTile(
+    title: Text(name),
+    onTap: () {
+      Navigator.push(context,
+          MaterialPageRoute(builder: (x) => CommonListWidget(builder, name)));
+    },
   );
 }
 

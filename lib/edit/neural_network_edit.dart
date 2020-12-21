@@ -1,32 +1,36 @@
+import 'package:dart_nn/dart_nn.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:q_net/data/neural_network.dart';
 import 'package:tuple/tuple.dart';
 
-import 'data/data_set_entry.dart';
-import 'edit/data_set_edit.dart';
+import 'neural_network_structure_edit.dart';
 
-class AnyDataSetWizard extends StatefulWidget {
-  final DataSet dataSet;
+class NeuralNetworkEdit extends StatefulWidget {
+  final NeuralNetworkDTO nn;
+  NeuralNetworkEdit(this.nn);
 
-  const AnyDataSetWizard({Key key, this.dataSet}) : super(key: key);
   @override
-  _WizardState createState() => new _WizardState(dataSet);
+  State<StatefulWidget> createState() {
+    return _NeuralNetworkEditState(nn);
+  }
 }
 
-class _WizardState extends State<AnyDataSetWizard> {
+class _NeuralNetworkEditState extends State<NeuralNetworkEdit> {
   int currentStep = 0;
   bool complete = false;
   List<Step> steps;
   TextEditingController inputSizeController = TextEditingController();
   TextEditingController outputSizeController = TextEditingController();
   TextEditingController nameController = TextEditingController();
-  final DataSet dataSet;
 
-  _WizardState(this.dataSet);
+  NeuralNetworkDTO nn;
+  _NeuralNetworkEditState(this.nn);
 
   List<Step> buildSteps() {
-    inputSizeController.text = dataSet.inputSize.toString();
-    outputSizeController.text = dataSet.outputSize.toString();
+    inputSizeController.text = nn?.inputSize?.toString() ?? '';
+    outputSizeController.text = nn?.outputSize?.toString() ?? '';
     return steps = [
       Step(
         title: Text("Name"),
@@ -55,8 +59,8 @@ class _WizardState extends State<AnyDataSetWizard> {
             ],
           )),
       Step(
-          title: Text("Training examples"),
-          content: DataSetEdit(set: dataSet),
+          title: Text("Done!"),
+          content: Text("Done"),
           state: StepState.complete),
     ];
   }
@@ -80,14 +84,32 @@ class _WizardState extends State<AnyDataSetWizard> {
       title: Text("Done!"),
       content: Text("you did it!"),
       actions: [
+        FlatButton(onPressed: goBack, child: Text("Go back")),
         FlatButton(
-            onPressed: () =>
-                Navigator.pop(context, Tuple2(nameController.text, dataSet)),
-            child: Text("Go back")),
+            onPressed: () => {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (c) => Scaffold(
+                              body: Center(
+                                  child: Container(
+                                child: NeuralNetworkStructureEdit(nn),
+                                width: 400,
+                                height: 100,
+                              )),
+                              appBar: AppBar(
+                                title: Text("data sets"),
+                              )))).then((value) => goBack())
+                },
+            child: Text("edit structure")),
         FlatButton(
             onPressed: () => throw ("not implemented"), child: Text("Test"))
       ],
     ));
+  }
+
+  void goBack() {
+    Navigator.pop(context, Tuple2(nameController.text, nn));
   }
 
   Widget buildStepper(BuildContext context) {
@@ -119,15 +141,24 @@ class _WizardState extends State<AnyDataSetWizard> {
   }
 
   goTo(int step) {
-    if (step == 2 &&
-        (int.parse(inputSizeController.text) != dataSet.inputSize ||
-            int.parse(outputSizeController.text) != dataSet.outputSize)) {
-      setState(() {
-        dataSet.examples.clear();
-        dataSet.inputSize = int.parse(inputSizeController.text);
-        dataSet.outputSize = int.parse(outputSizeController.text);
-      });
+    if (nn != null) {
+      if (step == 2 &&
+          (int.parse(inputSizeController.text) != nn.inputSize ||
+              int.parse(outputSizeController.text) != nn.outputSize)) {
+        setState(() {
+          nn.network = null;
+          nn.inputSize = int.parse(inputSizeController.text);
+          nn.outputSize = int.parse(outputSizeController.text);
+        });
+      }
       //todo: warn
+    } else if (step == 2) {
+      setState(() {
+        nn = NeuralNetworkDTO(int.parse(inputSizeController.text),
+            int.parse(outputSizeController.text), nameController.text);
+        nn.network = NeuralNetwork(
+            nn.inputSize, List(), Layer(nn.outputSize, 'Sigmoid'));
+      });
     }
     setState(() => currentStep = step);
   }

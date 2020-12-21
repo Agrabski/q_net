@@ -32,6 +32,15 @@ class DataSetEntry {
 
 enum DataSetType { Any, Point }
 
+DataSetType getDataSetTypeFromString(String statusAsString) {
+  for (DataSetType element in DataSetType.values) {
+    if (element.toString() == statusAsString) {
+      return element;
+    }
+  }
+  return null;
+}
+
 class DataSet {
   int inputSize;
   int outputSize;
@@ -45,6 +54,15 @@ class DataSet {
       'type': type.toString(),
       'examples': examples.map((e) => e.toJson()).toList()
     };
+  }
+
+  static DataSet fromJson(e) {
+    final result = DataSet();
+    result.inputSize = e['inputSize'];
+    result.outputSize = e['outputSize'];
+    result.type = getDataSetTypeFromString(e['type']);
+    result.examples = e['examples'];
+    return result;
   }
 
   static Future<String> getPathForFilename(String filename) {
